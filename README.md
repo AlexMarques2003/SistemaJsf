@@ -1,8 +1,7 @@
-## Welcome to GitHub Pages
+# Sistema de exemplo utilizando JSF e MYSQL
+## O sistema contempla cadastros de clientes, produtos e fornecedores
 
-You can use the [editor on GitHub](https://github.com/AlexMarques2003/SistemaJsf/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+O sistema contempla cadastro de clientes, produtos e fornecedores
 
 ### Markdown
 
