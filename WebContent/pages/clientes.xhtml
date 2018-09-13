@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+	<ui:define name="menu">
+		<ui:include src="/includes/menu.xhtml" />
+	</ui:define>
+	<ui:define name="conteudo">
+
+		<h:form id="frmclientes">
+
+			<p:dataTable id="tbclientes" widgetVar="tabelaClientes"
+				emptyMessage="Nenhum registro encontrado!"
+				value="#{MBClientes.itens}" var="item"
+				filteredValue="#{MBClientes.itensFiltrados}" paginator="true"
+				rows="7">
+
+				<f:facet name="header">Lista de Clientes</f:facet>
+
+				<p:column headerText="Cpf" sortBy="#{item.cpf}"
+					filterBy="#{item.cpf}">
+					<h:outputText value="#{item.cpf}" />
+				</p:column>	
+
+				<p:column headerText="Código" sortBy="#{item.codigo}"
+					filterBy="#{item.codigo}">
+					<h:outputText value="#{item.codigo}" />
+				</p:column>
+
+				<p:column headerText="Nome" sortBy="#{item.nome}"
+					filterBy="#{item.nome}">
+					<h:outputText value="#{item.nome}" />
+				</p:column>
+				
+				<p:column headerText="Opções">
+					<p:commandButton icon="ui-icon-trash"
+						oncomplete="PF('dlgcliExcluir').show();"
+						update=":frmcliExcluir:pncliExcluir">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{MBClientes.clientes}">
+						</f:setPropertyActionListener>
+					</p:commandButton>
+
+					<p:commandButton icon="ui-icon-pencil"
+						oncomplete="PF('dlgcliEditar').show();"
+						update=":frmcliEditar:pncliEditar">
+						<f:setPropertyActionListener value="#{item}"
+							target="#{MBClientes.clientes}">
+						</f:setPropertyActionListener>
+					</p:commandButton>
+				</p:column>
+				<f:facet name="footer">
+					<p:commandButton value="Novo"
+						actionListener="#{MBClientes.prepararNovo}"
+						oncomplete="PF('dlgcliNovo').show();"
+						update=":frmcliNovo:pncliNovo" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+
+		<!-- Formulário de criação de cliente -->
+
+		<p:dialog widgetVar="dlgcliNovo" closable="false" draggable="false"
+			resizable="false" header="Cadastar Cliente" modal="true"
+			appendTo="@(body)">
+			<h:form id="frmcliNovo">
+				<h:panelGrid id="pncliNovo" columns="2">
+
+					<p:outputLabel value="Cpf:" />
+					<h:inputText size="15" maxlength="50"
+						value="#{MBClientes.clientes.cpf}" required="true"
+						requiredMessage="O campo cpf é obrigatório." />						
+				
+					<p:outputLabel value="Nome:" for="txtNomeNovo" />
+					<h:inputText size="30" maxlength="50" id="txtNomeNovo"
+						value="#{MBClientes.clientes.nome}" required="true"
+						requiredMessage="O campo nome é obrigatório." />
+						
+				</h:panelGrid>
+				<h:panelGrid columns="2">
+					<p:commandButton value="Gravar" actionListener="#{MBClientes.novo}"
+						oncomplete="verificar(xhr, status, args, 'dlgcliNovo', 'tbclientes');"
+						update=":frmclientes:tbclientes :msgGlobal" />
+
+					<p:commandButton value="Cancelar" process="@this"
+						onclick="PF('dlgcliNovo').hide();" />
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<!-- Formulário de exclusão de cliente -->
+
+		<p:dialog widgetVar="dlgcliExcluir" closable="false" draggable="false"
+			resizable="false" header="Excluir Cliente" modal="true"
+			appendTo="@(body)">
+
+			<h:form id="frmcliExcluir">
+				<h:panelGrid id="pncliExcluir" columns="2">
+					<h:outputText value="Código" />
+					<h:outputText value="#{MBClientes.clientes.codigo}" />
+
+					<h:outputText value="Nome" />
+					<h:outputText value="#{MBClientes.clientes.nome}" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Excluir"
+						actionListener="#{MBClientes.excluir}"
+						oncomplete="PF('dlgcliExcluir').hide(); PF('tabelaClientes').clearFilters(); "
+						update=":frmclientes:tbclientes :msgGlobal" />
+					<p:commandButton value="Cancelar"
+						onclick="PF('dlgcliExcluir').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+		<!-- Formulário de edição de cliente -->
+
+		<p:dialog widgetVar="dlgcliEditar" closable="false" draggable="false"
+			resizable="false" header="Editar Cliente" modal="true"
+			appendTo="@(body)">
+
+			<h:form id="frmcliEditar">
+				<h:panelGrid id="pncliEditar" columns="2">
+					<h:outputText value="Código:" />
+					<h:outputText value="#{MBClientes.clientes.codigo}" />
+
+					<p:outputLabel value="Cpf:" />
+					<h:inputText size="15" maxlength="50"
+						value="#{MBClientes.clientes.cpf}" required="true"
+						requiredMessage="O campo cpf é obrigatório." />
+
+					<h:outputText value="Nome:" for="txtEdtCliNome" />
+					<h:inputText size="50" value="#{MBClientes.clientes.nome}" id="txtEdtCliNome"
+						required="true" requiredMessage="O campo nome é obrigatório." />
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Editar"
+						actionListener="#{MBClientes.editar}"
+						oncomplete="verificar(xhr, status, args, 'dlgcliEditar', 'tbclientes'); "
+						update=":frmclientes:tbclientes :msgGlobal" />
+					<p:commandButton value="Cancelar" process="@this"
+						onclick="PF('dlgcliEditar').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>
